@@ -8,9 +8,7 @@ const segment = require('../lib/segmenter').segment;
 
 describe('WebVTT segment', () => {
   it('should not segment a single cue', () => {
-    const input = `WEBVTT
-
-00:00.000 --> 00:05.000
+    const input = `00:00.000 --> 00:05.000
 a`;
     const parsed = parse(input);
     const segmented = segment(input, 10);
@@ -22,9 +20,7 @@ a`;
   });
 
   it('should return correct duration for single cue w/start > 0', () => {
-    const input = `WEBVTT
-
-00:11.000 --> 00:15.000
+    const input = `00:11.000 --> 00:15.000
 a`;
     const segmented = segment(input, 10);
 
@@ -32,9 +28,7 @@ a`;
   });
 
   it('should segment a short playlist in two w/correct duration', () => {
-    const input = `WEBVTT
-
-00:00.000 --> 00:10.000
+    const input = `00:00.000 --> 00:10.000
 a
 
 00:10.000 --> 00:19.000
@@ -51,9 +45,7 @@ a`;
   });
 
   it('should segment a short playlist in two w/silence between', () => {
-    const input = `WEBVTT
-
-00:00.000 --> 00:01.000
+    const input = `00:00.000 --> 00:01.000
 a
 
 00:11.000 --> 00:20.000
@@ -70,9 +62,7 @@ b`;
   });
 
   it('should skip empty cues in segmenting', () => {
-    const input = `WEBVTT
-
-00:00.000 --> 00:01.000
+    const input = `00:00.000 --> 00:01.000
 
 01:11.000 --> 01:20.000
 b`;
@@ -86,9 +76,7 @@ b`;
   });
 
   it('should have cue that passes boundaries in two segments', () => {
-    const input = `WEBVTT
-
-00:00.000 --> 00:11.000
+    const input = `00:00.000 --> 00:11.000
 a
 
 00:11.000 --> 00:20.000
@@ -106,9 +94,7 @@ b`;
   });
 
   it('should have corrct duration if boundary cues', () => {
-    const input = `WEBVTT
-
-00:11.000 --> 00:20.100
+    const input = `00:11.000 --> 00:20.100
 a
 
 00:20.100 --> 00:22.000
@@ -128,9 +114,7 @@ b`;
   });
 
   it('should segment four cues w/two boundaries', () => {
-    const input = `WEBVTT
-
-00:00.000 --> 00:05.000
+    const input = `00:00.000 --> 00:05.000
 a
 
 00:05.000 --> 00:11.000
@@ -163,9 +147,7 @@ d`;
   });
 
   it('should have correct durations for segments on boundary', () => {
-    const input = `WEBVTT
-
-00:00:09.000 --> 00:00:19.000
+    const input = `00:00:09.000 --> 00:00:19.000
 a
 
 00:00:19.000 --> 00:00:20.000
@@ -183,9 +165,7 @@ b`;
   });
 
   it('should have right durations for segs on boundary w/longer end', () => {
-    const input = `WEBVTT
-
-00:00:09.000 --> 00:00:19.000
+    const input = `00:00:09.000 --> 00:00:19.000
 a
 
 00:00:19.000 --> 00:00:25.000
@@ -203,9 +183,7 @@ b`;
   });
 
   it('should segment correctly if silence between four cues', () => {
-    const input = `WEBVTT
-
-00:00:00.000 --> 00:00:01.000
+    const input = `00:00:00.000 --> 00:00:01.000
 a
 
 00:00:30.000 --> 00:00:31.000
@@ -232,9 +210,7 @@ d`;
   });
 
   it('should segment correctly when passing hours', () => {
-    const input = `WEBVTT
-
-00:59:00.000 --> 00:59:10.000
+    const input = `00:59:00.000 --> 00:59:10.000
 a
 
 00:59:59.000 --> 01:00:11.000
@@ -251,9 +227,7 @@ b`;
   });
 
   it('should group many cues together in a segment', () => {
-    const input = `WEBVTT
-
-00:00:00.000 --> 00:00:11.360
+    const input = `00:00:00.000 --> 00:00:11.360
 a
 
 00:00:11.430 --> 00:00:13.110
@@ -290,9 +264,7 @@ f`;
   });
 
   it('should segment a longer playlist correctly', () => {
-    const input = `WEBVTT
-
-00:00:01.800 --> 00:00:05.160
+    const input = `00:00:01.800 --> 00:00:05.160
 0
 
 00:00:05.400 --> 00:00:07.560
@@ -357,9 +329,7 @@ f`;
   });
 
   it('should segment an even longer playlist correctly', () => {
-    const input = `WEBVTT
-
-00:00:01.800 --> 00:00:05.160
+    const input = `00:00:01.800 --> 00:00:05.160
 0
 
 00:00:05.400 --> 00:00:07.560
@@ -538,9 +508,7 @@ f`;
   });
 
   it('should segment correctly with silence in middle', () => {
-    const input = `WEBVTT
-
-00:05:49.720 --> 00:05:53.160
+    const input = `00:05:49.720 --> 00:05:53.160
 0
 
 00:05:53.280 --> 00:05:55.400
@@ -595,9 +563,7 @@ f`;
   });
 
   it('should allow cues to intersect', () => {
-    const input = `WEBVTT
-
-00:00:00.000 --> 00:00:12.000
+    const input = `00:00:00.000 --> 00:00:12.000
 a
 
 00:00:01.000 --> 00:00:13.000

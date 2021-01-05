@@ -1,26 +1,26 @@
 {
-  "name": "node-webvtt",
+  "name": "node-srt",
   "version": "1.9.3",
-  "description": "WebVTT parser, compiler, and segmenter with HLS support",
+  "description": "SRT parser, compiler, and segmenter with HLS support",
   "main": "index.js",
   "scripts": {
     "eslint": "eslint *.js **/*.js",
     "test": "npm run eslint -s && nyc mocha -R dot"
   },
   "keywords": [
-    "webvtt",
-    "vtt",
     "segment",
     "hls",
     "subtitle",
     "closed",
-    "caption"
+    "caption",
+    "srt",
+    "subrip"
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/osk/node-webvtt"
+    "url": "git://github.com/goatandsheep/node-srt"
   },
-  "author": "Ólafur Sverrir Kjartansson <kjarni@gmail.com>",
+  "author": "Kemal Ahmed <goatandsheep@gmail.com>",
   "license": "MIT",
   "devDependencies": {
     "chai": "^4.2.0",
@@ -40,7 +40,7 @@
     "index.js"
   ],
   "bin": {
-    "webvtt-segment": "./bin/webvtt-segment.js"
+    "subrip-segment": "./bin/subrip-segment.js"
   },
   "nyc": {
     "extension": [

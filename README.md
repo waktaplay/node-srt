@@ -1,16 +1,16 @@
-# WebVTT compiler parser and segmenter
+# Subrip (.srt) compiler parser and segmenter
 
-Compiles, parses WebVTT files, segments and generates HLS playlists for them.
+Compiles, parses Subrip files, segments and generates HLS playlists for them.
 
-[![CircleCI](https://circleci.com/gh/osk/node-webvtt.svg?style=svg)](https://circleci.com/gh/osk/node-webvtt)
+[![CircleCI](https://circleci.com/gh/goatandsheep/node-srt.svg?style=svg)](https://circleci.com/gh/goatandsheep/node-srt)
+
+This is a sister package to [osk/node-webvtt](https://github.com/osk/node-webvtt).
 
 ## Usage
 
-For a WebVTT file:
+For a Subrip file:
 
 ```text
-WEBVTT
-
 00:00:00.000 --> 00:00:01.000
 Hello world!
 
@@ -24,24 +24,24 @@ Foo
 Bar
 ```
 
-We can parse, segment and create HLS playlists, and compile back to WebVTT format:
+We can parse, segment and create HLS playlists, and compile back to Subrip format:
 
 ```javascript
-const webvtt = require('node-webvtt');
+const subrip = require('node-srt');
 
 const segmentDuration = 10; // default to 10
 const startOffset = 0; // Starting MPEG TS offset to be used in timestamp map, default 900000
 
-const parsed = webvtt.parse(input);
-const compile = webvtt.compile(input);
-const segmented = webvtt.parse(input, segmentDuration);
-const playlist = webvtt.hls.hlsSegmentPlaylist(input, segmentDuration);
-const segments = webvtt.hls.hlsSegment(input, segmentDuration, startOffset);
+const parsed = subrip.parse(input);
+const compile = subrip.compile(input);
+const segmented = subrip.parse(input, segmentDuration);
+const playlist = subrip.hls.hlsSegmentPlaylist(input, segmentDuration);
+const segments = subrip.hls.hlsSegment(input, segmentDuration, startOffset);
 ```
 
 ### Parsing
 
-Parses the WebVTT file and returns an object with `valid === true` if parsed correctly and an array of cues parsed.
+Parses the Subrip file and returns an object with `valid === true` if parsed correctly and an array of cues parsed.
 
 Each cue can have:
 
@@ -51,7 +51,7 @@ Each cue can have:
 * `text` - Text of the subtitle
 * `styles` - If any of the cue
 
-If the WebVTT file is invalid, the parser will throw a `ParserError` exception. So for safety, calls to `parse` should be in `try catch`.
+If the Subrip file is invalid, the parser will throw a `ParserError` exception. So for safety, calls to `parse` should be in `try catch`.
 
 For the above example we'd get:
 
@@ -124,7 +124,7 @@ result = {
 
 ### Metadata
 
-Some WebVTT strings may also contain lines of metadata after the initial `WEBVTT` line, for example:
+Some Subrip strings may also contain lines of metadata after the initial `WEBVTT` line, for example:
 
 ```text
 WEBVTT
@@ -138,7 +138,7 @@ Hello world!
 By passing `{ meta: true }` to the `parse` method, these metadata will be returned as an object called `meta`. For example, parsing the above example:
 
 ```javascript
-parse(webvtt, { meta: true });
+parse(subrip, { meta: true });
 ```
 
 would return the following:
@@ -166,7 +166,7 @@ If no metadata is available, `meta` will be set to `null` in the result if the o
 
 ### Compiling
 
-Compiles JSON from the above format back into a WebVTT string. If a `meta` key is in the input,
+Compiles JSON from the above format back into a Subrip string. If a `meta` key is in the input,
 it will be compiled as well. The `meta` value must be an object and each key and value must be a string.
 
 If the object is missing any attributes, the compiler will throw a `CompilerError` exception. So
@@ -267,16 +267,16 @@ Creates a list of HLS segments for the subtitles, returning an array of them wit
 
 ## CLI
 
-For segmenting a WebVTT file quickly, you can use the included CLI tool:
+For segmenting a Subrip file quickly, you can use the included CLI tool:
 
 ```bash
-./webvtt-segment.js -v --target-duration 10 -o ./subs subs.vtt
+./subrip-segment.js -v --target-duration 10 -o ./subs subs.vtt
 ```
 
 ```bash
-$ ./webvtt-segment.js --help
+$ ./subrip-segment.js --help
 
-  Usage: webvtt-segment [options] <webvtt file>
+  Usage: subrip-segment [options] <subrip file>
 
   Options:
 

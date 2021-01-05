@@ -34,19 +34,8 @@ describe('WebVTT parser', () => {
     parse('WEBVTT').should.have.property('valid').be.true;
   });
 
-  it('should fail on missing newline after signature', () => {
-    const input = `WEBVTT
-Foo
-`;
-
-    (() => { parse(input); })
-      .should.throw(parserError, /blank line/);
-  });
-
   it('should fail parsing cue with standalone identifier', () => {
-    const input = `WEBVTT
-
-1
+    const input = `1
 `;
 
     (() => { parse(input); })
@@ -54,9 +43,7 @@ Foo
   });
 
   it('should fail parsing cue with identifier but no timestamp', () => {
-    const input = `WEBVTT
-
-1
+    const input = `1
 a`;
 
     (() => { parse(input); })
@@ -64,9 +51,7 @@ a`;
   });
 
   it('should fail parsing cue with illegal timestamp', () => {
-    const input = `WEBVTT
-
-1
+    const input = `1
 0 --> 0
 a`;
 
@@ -75,9 +60,7 @@ a`;
   });
 
   it('should fail parsing cue with no min in timestamp', () => {
-    const input = `WEBVTT
-
-00:00.001 --> 00:00.000
+    const input = `00:00.001 --> 00:00.000
 a`;
 
     (() => { parse(input); })
@@ -85,9 +68,7 @@ a`;
   });
 
   it('should parse cue with legal timestamp and id', () => {
-    const input = `WEBVTT
-
-1
+    const input = `1
 00:00.000 --> 00:00.001
 a`;
 
@@ -96,9 +77,7 @@ a`;
   });
 
   it('should parse cue with legal timestamp, no id and text', () => {
-    const input = `WEBVTT
-
-00:00.000 --> 00:00.001
+    const input = `00:00.000 --> 00:00.001
 a`;
 
     parse(input).cues[0].start.should.equal(0);
@@ -106,9 +85,7 @@ a`;
   });
 
   it('should return parsed data about a single cue', () => {
-    const input = `WEBVTT
-
-1
+    const input = `1
 00:00.000 --> 00:01.001 align:start line:0%
 a
 b`;
@@ -124,9 +101,7 @@ b`;
   });
 
   it('should parse cue with mins & hours in timestamp', () => {
-    const input = `WEBVTT
-
-1
+    const input = `1
 10:00.000 --> 01:00:00.000
 a`;
 
@@ -135,9 +110,7 @@ a`;
   });
 
   it('should parse intersecting cues', () => {
-    const input = `WEBVTT
-
-00:00:00.000 --> 00:00:12.000
+    const input = `00:00:00.000 --> 00:00:12.000
 a
 
 
@@ -152,9 +125,7 @@ b`;
   });
 
   it('should fail parsing if start equal to end', () => {
-    const input = `WEBVTT
-
-00:00:00.000 --> 00:00:00.000
+    const input = `00:00:00.000 --> 00:00:00.000
 a`;
 
     (() => { parse(input); })
@@ -162,9 +133,7 @@ a`;
   });
 
   it('should parse cue with trailing lines', () => {
-    const input = `WEBVTT
-
-00:00.000 --> 00:00.001
+    const input = `00:00.000 --> 00:00.001
 a
 
 `;
@@ -174,9 +143,7 @@ a
   });
 
   it('should parse cue with one digit hours in timestamp', () => {
-    const input = `WEBVTT
-
-59:16.403 --> 1:04:13.283
+    const input = `59:16.403 --> 1:04:13.283
 Chapter 17`;
 
     parse(input).cues[0].start.should.equal(3556.403);
@@ -248,9 +215,7 @@ Chapter 17`;
   });
 
   it('should not return meta by default', () => {
-    const input = `WEBVTT
-
-1
+    const input = `1
 00:00.000 --> 00:00.001`;
 
     parse(input).should.have.property('valid').be.true;
@@ -258,9 +223,7 @@ Chapter 17`;
   });
 
   it('should accept an options object', () => {
-    const input = `WEBVTT
-
-1
+    const input = `1
 00:00.000 --> 00:00.001
 Options`;
     const options = { meta: true };
@@ -316,9 +279,7 @@ X-TIMESTAMP-MAP=LOCAL:00:00:00.000,MPEGTS:0
   });
 
   it('should return null if meta option is true but no meta', () => {
-    const input = `WEBVTT
-
-1
+    const input = `1
 00:00.000 --> 00:00.001`;
     const options = { meta: true };
 
@@ -328,9 +289,7 @@ X-TIMESTAMP-MAP=LOCAL:00:00:00.000,MPEGTS:0
 
   it('should return strict as default true', () => {
 
-    const input = `WEBVTT
-
-    1
+    const input = `1
     00:00.000 --> 00:00.001`;
 
     const result = parse(input);
@@ -342,9 +301,7 @@ X-TIMESTAMP-MAP=LOCAL:00:00:00.000,MPEGTS:0
   it('should accept strict as an option and return it in the result', () => {
     const options = { strict: false };
 
-    const input = `WEBVTT
-
-    1
+    const input = `1
     00:00.000 --> 00:00.001`;
 
     const result = parse(input, options);
@@ -356,9 +313,7 @@ X-TIMESTAMP-MAP=LOCAL:00:00:00.000,MPEGTS:0
   it('should parse malformed cues if strict mode is false', () => {
     const options = { strict: false };
 
-    const input = `WEBVTT
-
-MALFORMEDCUE -->
+    const input = `MALFORMEDCUE -->
 This text is from a malformed cue. It should not be processed.
 
 1
@@ -376,9 +331,7 @@ test`;
   });
 
   it('should error when parsing a cue w/start end in strict', () => {
-    const input = `WEBVTT
-
-00:00.002 --> 00:00.001
+    const input = `00:00.002 --> 00:00.001
 a`;
 
     const options = { strict: false };
@@ -393,9 +346,7 @@ a`;
   });
 
   it('should parse cues w/equal start and end with strict parsing off', () => {
-    const input = `WEBVTT
-
-    230
+    const input = `230
 00:03:15.400 --> 00:03:15.400 T:5% S:20% L:70% A:middle
 Text Position: 5%
 `;
@@ -420,9 +371,7 @@ Text Position: 5%
   });
 
   it('should parse cue w/o round-off', () => {
-    const input = `WEBVTT
-
-    01:24:39.06 --> 01:24:40.060
+    const input = `01:24:39.06 --> 01:24:40.060
 a`;
 
     parse(input).cues[0].start.should.equal(5079.06);
