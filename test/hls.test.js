@@ -38,6 +38,7 @@ a
 2
 05:59:59.000 --> 05:59:59.999
 b`;
+    // eslint-disable-next-line max-len
     const expectedFirstSegment = `X-TIMESTAMP-MAP=MPEGTS:900000,LOCAL:00:00:00.000
 
 1
@@ -45,6 +46,7 @@ b`;
 a
 `;
 
+    // eslint-disable-next-line max-len
     const expectedSecondSegment = `X-TIMESTAMP-MAP=MPEGTS:900000,LOCAL:00:00:00.000
 
 2

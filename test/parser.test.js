@@ -25,15 +25,6 @@ describe('WebVTT parser', () => {
       .should.throw(parserError, /WEBVTT/);
   });
 
-  it('should throw when input does not start with WebVTT signature', () => {
-    (() => { parse('FOO'); })
-      .should.throw(parserError, /WEBVTT/);
-  });
-
-  it('should parse the minimum WebVTT file, w/only signature', () => {
-    parse('WEBVTT').should.have.property('valid').be.true;
-  });
-
   it('should fail parsing cue with standalone identifier', () => {
     const input = `1
 `;
@@ -150,28 +141,8 @@ Chapter 17`;
     parse(input).cues[0].end.should.equal(3853.283);
   });
 
-  it('should allow a text header', () => {
-    const input = `WEBVTT header
-
-    00:00.000 --> 00:00.001
-    a`;
-
-    parse(input).cues[0].end.should.equal(0.001);
-  });
-
-  it('should not allow a text header w/o a space or tab after WEBVTT', () => {
-    const input = `WEBVTTheader
-
-    00:00.000 --> 00:00.001
-    a`;
-    (() => { parse(input); })
-      .should.throw(parserError, /Header comment must start with space or tab/);
-  });
-
   it('should allow NOTE for comments', () => {
-    const input = `WEBVTT - Translation of that film I like
-
-    NOTE
+    const input = `NOTE
     This translation was done by Kyle so that
     some friends can watch it with their parents.
 
@@ -195,17 +166,13 @@ Chapter 17`;
   });
 
   it('should not create any cues when blank', () => {
-    const input = `WEBVTT
-    
-    `;
+    const input = '';
 
     parse(input).cues.should.have.length(0);
   });
 
   it('should skip blank text cues', () => {
-    const input = `WEBVTT header
-
-    00:00.000 --> 00:00.001
+    const input = `00:00.000 --> 00:00.001
 
     3
     00:02:25.000 --> 00:02:30.000
@@ -232,35 +199,8 @@ Options`;
     parse(input, options).cues[0].end.should.equal(0.001);
   });
 
-  it('should fail if metadata exists but the meta option is not set', () => {
-    const input = `WEBVTT
-Kind: captions
-Language: en
-
-1
-00:00.000 --> 00:00.001`;
-    const options = { };
-
-    (() => { parse(input, options); })
-      .should.throw(parserError, /Missing blank line after signature/);
-  });
-
-  it('should fail if metadata exists but the meta option is false', () => {
-    const input = `WEBVTT
-Kind: captions
-Language: en
-
-1
-00:00.000 --> 00:00.001`;
-    const options = { meta: false };
-
-    (() => { parse(input, options); })
-      .should.throw(parserError, /Missing blank line after signature/);
-  });
-
   it('should return meta if meta option is true', () => {
-    const input = `WEBVTT
-Kind: captions
+    const input = `Kind: captions
 Language: en
 X-TIMESTAMP-MAP=LOCAL:00:00:00.000,MPEGTS:0
 
@@ -380,9 +320,7 @@ a`;
 
   it('should not throw unhandled error on malformed input in non strict mode',
     () => {
-      const input = `WEBVTT FILE
-
-1096
+      const input = `1096
 01:45:13.056 --> 01:45:14.390
 
 
@@ -403,9 +341,7 @@ a`;
 
   it('should throw a handled error not an unhandled one on malformed input',
     () => {
-      const input = `WEBVTT FILE
-
-1096
+      const input = `1096
 01:45:13.056 --> 01:45:14.390
 
 
