@@ -457,11 +457,7 @@ Hello world
       valid: true
     };
 
-    const output = `Kind: captions
-Language: en
-X-TIMESTAMP-MAP=LOCAL: 00:00:00.000,MPEGTS:0
-
-1
+    const output = `1
 00:02:15.001 --> 00:02:20.000
 Hello world
 `;

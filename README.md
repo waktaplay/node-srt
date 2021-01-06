@@ -127,10 +127,6 @@ result = {
 Some Subrip strings may also contain lines of metadata after the initial `WEBVTT` line, for example:
 
 ```text
-WEBVTT
-Kind: captions
-Language: en
-
 00:00:00.000 --> 00:00:01.000
 Hello world!
 ```
@@ -191,10 +187,6 @@ const input = {
 const result = compile(input);
 
 /*
-WEBVTT
-Kind: captions
-Language: en
-
 1
 00:02:15.001 --> 00:02:20.000
 Hello world

@@ -200,11 +200,7 @@ Options`;
   });
 
   it('should return meta if meta option is true', () => {
-    const input = `Kind: captions
-Language: en
-X-TIMESTAMP-MAP=LOCAL:00:00:00.000,MPEGTS:0
-
-1
+    const input = `1
 00:00.000 --> 00:00.001`;
     const options = { meta: true };
 
@@ -298,8 +294,8 @@ Text Position: 5%
     result.should.have.property('valid').be.true;
   });
 
-  it('should parse the acid.vtt file w/o errors w/strict parsing off', () => {
-    const input = fs.readFileSync('./test/data/acid.vtt').toString('utf8');
+  it('should parse the acid.srt file w/o errors w/strict parsing off', () => {
+    const input = fs.readFileSync('./test/data/acid.srt').toString('utf8');
 
     const options = { strict: false };
 
