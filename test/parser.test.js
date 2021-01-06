@@ -17,36 +17,16 @@ describe('WebVTT parser', () => {
 
   it('should not parse the empty subtitle', () => {
     (() => { parse(''); })
-      .should.throw(parserError, /WEBVTT/);
+      .should.throw(parserError, '');
   });
 
   it('should not parse non-string subtitles', () => {
     (() => { parse(''); })
-      .should.throw(parserError, /WEBVTT/);
-  });
-
-  it('should throw when input does not start with WebVTT signature', () => {
-    (() => { parse('FOO'); })
-      .should.throw(parserError, /WEBVTT/);
-  });
-
-  it('should parse the minimum WebVTT file, w/only signature', () => {
-    parse('WEBVTT').should.have.property('valid').be.true;
-  });
-
-  it('should fail on missing newline after signature', () => {
-    const input = `WEBVTT
-Foo
-`;
-
-    (() => { parse(input); })
-      .should.throw(parserError, /blank line/);
+      .should.throw(parserError, '');
   });
 
   it('should fail parsing cue with standalone identifier', () => {
-    const input = `WEBVTT
-
-1
+    const input = `1
 `;
 
     (() => { parse(input); })
@@ -54,9 +34,7 @@ Foo
   });
 
   it('should fail parsing cue with identifier but no timestamp', () => {
-    const input = `WEBVTT
-
-1
+    const input = `1
 a`;
 
     (() => { parse(input); })
@@ -64,9 +42,7 @@ a`;
   });
 
   it('should fail parsing cue with illegal timestamp', () => {
-    const input = `WEBVTT
-
-1
+    const input = `1
 0 --> 0
 a`;
 
@@ -75,9 +51,7 @@ a`;
   });
 
   it('should fail parsing cue with no min in timestamp', () => {
-    const input = `WEBVTT
-
-00:00.001 --> 00:00.000
+    const input = `00:00.001 --> 00:00.000
 a`;
 
     (() => { parse(input); })
@@ -85,9 +59,7 @@ a`;
   });
 
   it('should parse cue with legal timestamp and id', () => {
-    const input = `WEBVTT
-
-1
+    const input = `1
 00:00.000 --> 00:00.001
 a`;
 
@@ -96,9 +68,7 @@ a`;
   });
 
   it('should parse cue with legal timestamp, no id and text', () => {
-    const input = `WEBVTT
-
-00:00.000 --> 00:00.001
+    const input = `00:00.000 --> 00:00.001
 a`;
 
     parse(input).cues[0].start.should.equal(0);
@@ -106,9 +76,7 @@ a`;
   });
 
   it('should return parsed data about a single cue', () => {
-    const input = `WEBVTT
-
-1
+    const input = `1
 00:00.000 --> 00:01.001 align:start line:0%
 a
 b`;
@@ -124,9 +92,7 @@ b`;
   });
 
   it('should parse cue with mins & hours in timestamp', () => {
-    const input = `WEBVTT
-
-1
+    const input = `1
 10:00.000 --> 01:00:00.000
 a`;
 
@@ -135,9 +101,7 @@ a`;
   });
 
   it('should parse intersecting cues', () => {
-    const input = `WEBVTT
-
-00:00:00.000 --> 00:00:12.000
+    const input = `00:00:00.000 --> 00:00:12.000
 a
 
 
@@ -152,9 +116,7 @@ b`;
   });
 
   it('should fail parsing if start equal to end', () => {
-    const input = `WEBVTT
-
-00:00:00.000 --> 00:00:00.000
+    const input = `00:00:00.000 --> 00:00:00.000
 a`;
 
     (() => { parse(input); })
@@ -162,9 +124,7 @@ a`;
   });
 
   it('should parse cue with trailing lines', () => {
-    const input = `WEBVTT
-
-00:00.000 --> 00:00.001
+    const input = `00:00.000 --> 00:00.001
 a
 
 `;
@@ -174,37 +134,15 @@ a
   });
 
   it('should parse cue with one digit hours in timestamp', () => {
-    const input = `WEBVTT
-
-59:16.403 --> 1:04:13.283
+    const input = `59:16.403 --> 1:04:13.283
 Chapter 17`;
 
     parse(input).cues[0].start.should.equal(3556.403);
     parse(input).cues[0].end.should.equal(3853.283);
   });
 
-  it('should allow a text header', () => {
-    const input = `WEBVTT header
-
-    00:00.000 --> 00:00.001
-    a`;
-
-    parse(input).cues[0].end.should.equal(0.001);
-  });
-
-  it('should not allow a text header w/o a space or tab after WEBVTT', () => {
-    const input = `WEBVTTheader
-
-    00:00.000 --> 00:00.001
-    a`;
-    (() => { parse(input); })
-      .should.throw(parserError, /Header comment must start with space or tab/);
-  });
-
   it('should allow NOTE for comments', () => {
-    const input = `WEBVTT - Translation of that film I like
-
-    NOTE
+    const input = `NOTE
     This translation was done by Kyle so that
     some friends can watch it with their parents.
 
@@ -228,17 +166,13 @@ Chapter 17`;
   });
 
   it('should not create any cues when blank', () => {
-    const input = `WEBVTT
-    
-    `;
+    const input = '';
 
     parse(input).cues.should.have.length(0);
   });
 
   it('should skip blank text cues', () => {
-    const input = `WEBVTT header
-
-    00:00.000 --> 00:00.001
+    const input = `00:00.000 --> 00:00.001
 
     3
     00:02:25.000 --> 00:02:30.000
@@ -248,89 +182,16 @@ Chapter 17`;
   });
 
   it('should not return meta by default', () => {
-    const input = `WEBVTT
-
-1
+    const input = `1
 00:00.000 --> 00:00.001`;
 
     parse(input).should.have.property('valid').be.true;
     parse(input).should.not.have.property('meta');
   });
 
-  it('should accept an options object', () => {
-    const input = `WEBVTT
-
-1
-00:00.000 --> 00:00.001
-Options`;
-    const options = { meta: true };
-
-    parse(input, options).cues[0].start.should.equal(0);
-    parse(input, options).cues[0].end.should.equal(0.001);
-  });
-
-  it('should fail if metadata exists but the meta option is not set', () => {
-    const input = `WEBVTT
-Kind: captions
-Language: en
-
-1
-00:00.000 --> 00:00.001`;
-    const options = { };
-
-    (() => { parse(input, options); })
-      .should.throw(parserError, /Missing blank line after signature/);
-  });
-
-  it('should fail if metadata exists but the meta option is false', () => {
-    const input = `WEBVTT
-Kind: captions
-Language: en
-
-1
-00:00.000 --> 00:00.001`;
-    const options = { meta: false };
-
-    (() => { parse(input, options); })
-      .should.throw(parserError, /Missing blank line after signature/);
-  });
-
-  it('should return meta if meta option is true', () => {
-    const input = `WEBVTT
-Kind: captions
-Language: en
-X-TIMESTAMP-MAP=LOCAL:00:00:00.000,MPEGTS:0
-
-1
-00:00.000 --> 00:00.001`;
-    const options = { meta: true };
-
-    parse(input, options).should.have.property('valid').be.true;
-    parse(input, options).should.have.property('meta').be.deep.equal(
-      {
-        Kind: 'captions',
-        Language: 'en',
-        'X-TIMESTAMP-MAP=LOCAL': '00:00:00.000,MPEGTS:0'
-      }
-    );
-  });
-
-  it('should return null if meta option is true but no meta', () => {
-    const input = `WEBVTT
-
-1
-00:00.000 --> 00:00.001`;
-    const options = { meta: true };
-
-    parse(input, options).should.have.property('valid').be.true;
-    parse(input, options).should.have.property('meta').be.equal(null);
-  });
-
   it('should return strict as default true', () => {
 
-    const input = `WEBVTT
-
-    1
+    const input = `1
     00:00.000 --> 00:00.001`;
 
     const result = parse(input);
@@ -342,9 +203,7 @@ X-TIMESTAMP-MAP=LOCAL:00:00:00.000,MPEGTS:0
   it('should accept strict as an option and return it in the result', () => {
     const options = { strict: false };
 
-    const input = `WEBVTT
-
-    1
+    const input = `1
     00:00.000 --> 00:00.001`;
 
     const result = parse(input, options);
@@ -356,9 +215,7 @@ X-TIMESTAMP-MAP=LOCAL:00:00:00.000,MPEGTS:0
   it('should parse malformed cues if strict mode is false', () => {
     const options = { strict: false };
 
-    const input = `WEBVTT
-
-MALFORMEDCUE -->
+    const input = `MALFORMEDCUE -->
 This text is from a malformed cue. It should not be processed.
 
 1
@@ -376,9 +233,7 @@ test`;
   });
 
   it('should error when parsing a cue w/start end in strict', () => {
-    const input = `WEBVTT
-
-00:00.002 --> 00:00.001
+    const input = `00:00.002 --> 00:00.001
 a`;
 
     const options = { strict: false };
@@ -393,9 +248,7 @@ a`;
   });
 
   it('should parse cues w/equal start and end with strict parsing off', () => {
-    const input = `WEBVTT
-
-    230
+    const input = `230
 00:03:15.400 --> 00:03:15.400 T:5% S:20% L:70% A:middle
 Text Position: 5%
 `;
@@ -407,8 +260,8 @@ Text Position: 5%
     result.should.have.property('valid').be.true;
   });
 
-  it('should parse the acid.vtt file w/o errors w/strict parsing off', () => {
-    const input = fs.readFileSync('./test/data/acid.vtt').toString('utf8');
+  it('should parse the acid.srt file w/o errors w/strict parsing off', () => {
+    const input = fs.readFileSync('./test/data/acid.srt').toString('utf8');
 
     const options = { strict: false };
 
@@ -420,9 +273,7 @@ Text Position: 5%
   });
 
   it('should parse cue w/o round-off', () => {
-    const input = `WEBVTT
-
-    01:24:39.06 --> 01:24:40.060
+    const input = `01:24:39.06 --> 01:24:40.060
 a`;
 
     parse(input).cues[0].start.should.equal(5079.06);
@@ -431,9 +282,7 @@ a`;
 
   it('should not throw unhandled error on malformed input in non strict mode',
     () => {
-      const input = `WEBVTT FILE
-
-1096
+      const input = `1096
 01:45:13.056 --> 01:45:14.390
 
 
@@ -454,9 +303,7 @@ a`;
 
   it('should throw a handled error not an unhandled one on malformed input',
     () => {
-      const input = `WEBVTT FILE
-
-1096
+      const input = `1096
 01:45:13.056 --> 01:45:14.390
 
 

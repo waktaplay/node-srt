@@ -8,7 +8,7 @@ const program = require('commander');
 
 program
   .version('0.0.1')
-  .usage('[options] <webvtt file>')
+  .usage('[options] <subrip file>')
   .option('-t, --target-duration [duration]',
     'Target duration for each segment in secods, defaults to 10',
     parseInt,
@@ -24,7 +24,7 @@ const input = program.args;
 const t = program.targetDuration || 10;
 const outputDir = program.outputDirectory || './';
 
-log('Hi there! Let’s try and parse and segment a webvtt file, shall we');
+log('Hi there! Let’s try and parse and segment a subrip file, shall we');
 log(`Output directory is: ${outputDir}`);
 log(`Target duration is: ${t}`);
 

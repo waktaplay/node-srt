@@ -251,9 +251,7 @@ describe('WebVTT compiler', () => {
       }],
       valid: true
     };
-    const output = `WEBVTT
-
-1
+    const output = `1
 00:02:15.001 --> 00:02:20.000
 Ta en kopp varmt te.
 Det är inte varmt.
@@ -295,9 +293,7 @@ Ta en kopp
       }],
       valid: true
     };
-    const output = `WEBVTT
-
-1
+    const output = `1
 00:19:59.529 --> 00:19:59.539
 Ta en kopp varmt te.
 Det är inte varmt.
@@ -327,9 +323,7 @@ Ta en kopp
       }],
       valid: true
     };
-    const output = `WEBVTT
-
-1
+    const output = `1
 00:02:15.999 --> 00:02:20.000
 Ta en kopp varmt te.
 Det är inte varmt.
@@ -355,9 +349,7 @@ Det är inte varmt.
 
   it('should be reversible', () => {
 
-    const input = `WEBVTT
-
-1
+    const input = `1
 00:02:15.001 --> 00:02:20.000
 Ta en kopp varmt te.
 Det är inte varmt.
@@ -440,58 +432,12 @@ Ta en kopp
       }],
       valid: true
     };
-    const output = `WEBVTT
-
-1
+    const output = `1
 00:02:15.001 --> 00:02:20.000 align:start line:0%
 Hello world
 `;
 
     compile(input).should.equal(output);
-  });
-
-  it('should compile metadata', () => {
-    const input = {
-      meta: {
-        Kind: 'captions',
-        Language: 'en',
-        'X-TIMESTAMP-MAP=LOCAL': '00:00:00.000,MPEGTS:0'
-      },
-      cues: [{
-        end: 140,
-        identifier: '1',
-        start: 135.001,
-        text: 'Hello world',
-        styles: ''
-      }],
-      valid: true
-    };
-
-    const output = `WEBVTT
-Kind: captions
-Language: en
-X-TIMESTAMP-MAP=LOCAL: 00:00:00.000,MPEGTS:0
-
-1
-00:02:15.001 --> 00:02:20.000
-Hello world
-`;
-
-    compile(input).should.equal(output);
-  });
-
-  it('should not compile non-object metadata', () => {
-    (() => {
-      compile({ meta: [], cues: [], valid: true });
-    })
-      .should.throw(compilerError, /Metadata must be an object/);
-  });
-
-  it('should not compile non-string metadata values', () => {
-    (() => {
-      compile({ meta: { foo: [] }, cues: [], valid: true });
-    })
-      .should.throw(compilerError, /Metadata value for "foo" must be string/);
   });
 
   it('should not compile cues in non-chronological order', () => {

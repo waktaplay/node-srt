@@ -1,8 +1,6 @@
-WEBVTT
-
 1
 00:00:00.000 --> 00:00:10.000
-This WebVTT acid test will verify rendering and parsing compatibility with the WebVTT standard.
+This Subrip acid test will verify rendering and parsing compatibility with the WebVTT standard.
 
 2
 00:00:10.000 --> 00:00:15.000
