@@ -440,45 +440,6 @@ Hello world
     compile(input).should.equal(output);
   });
 
-  it('should compile metadata', () => {
-    const input = {
-      meta: {
-        Kind: 'captions',
-        Language: 'en',
-        'X-TIMESTAMP-MAP=LOCAL': '00:00:00.000,MPEGTS:0'
-      },
-      cues: [{
-        end: 140,
-        identifier: '1',
-        start: 135.001,
-        text: 'Hello world',
-        styles: ''
-      }],
-      valid: true
-    };
-
-    const output = `1
-00:02:15.001 --> 00:02:20.000
-Hello world
-`;
-
-    compile(input).should.equal(output);
-  });
-
-  it('should not compile non-object metadata', () => {
-    (() => {
-      compile({ meta: [], cues: [], valid: true });
-    })
-      .should.throw(compilerError, /Metadata must be an object/);
-  });
-
-  it('should not compile non-string metadata values', () => {
-    (() => {
-      compile({ meta: { foo: [] }, cues: [], valid: true });
-    })
-      .should.throw(compilerError, /Metadata value for "foo" must be string/);
-  });
-
   it('should not compile cues in non-chronological order', () => {
     const input = {
       valid: true,
