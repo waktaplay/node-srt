@@ -32,6 +32,15 @@ describe('WebVTT compiler', () => {
       .should.throw(compilerError, /Input cannot be array/);
   });
 
+  it('should compile empty object', () => {
+    (() => {
+      compile({
+        cues: [], valid: true
+      });
+    })
+      .should.not.throw(compilerError, /valid/);
+  });
+
   it('should compile object', () => {
     (() => {
       compile({
