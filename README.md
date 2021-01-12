@@ -3,6 +3,8 @@
 Compiles, parses Subrip files, segments and generates HLS playlists for them.
 
 [![CircleCI](https://circleci.com/gh/goatandsheep/node-srt.svg?style=svg)](https://circleci.com/gh/goatandsheep/node-srt)
+[![npm version](https://badgen.net/npm/v/node-srt)](https://www.npmjs.com/package/node-srt)
+[![npm downloads](https://img.shields.io/npm/dt/node-srt.svg?style=flat-square)](https://www.npmjs.com/package/node-srt)
 
 This is a sister package to [osk/node-webvtt](https://github.com/osk/node-webvtt).
 
