@@ -16,12 +16,12 @@ describe('WebVTT parser', () => {
   });
 
   it('should not parse the empty subtitle', () => {
-    (() => { parse(''); })
+    (() => { parse(); })
       .should.throw(parserError, '');
   });
 
   it('should not parse non-string subtitles', () => {
-    (() => { parse(''); })
+    (() => { parse(33); })
       .should.throw(parserError, '');
   });
 
