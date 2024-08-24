@@ -1,12 +1,12 @@
-# Subrip (.srt) compiler parser and segmenter
+# Subrip (.srt) compiler/parser/segmenter with Typescript support
 
 Compiles, parses Subrip files, segments and generates HLS playlists for them.
 
-[![CircleCI](https://circleci.com/gh/goatandsheep/node-srt.svg?style=svg)](https://circleci.com/gh/goatandsheep/node-srt)
-[![npm version](https://badgen.net/npm/v/node-srt)](https://www.npmjs.com/package/node-srt)
-[![npm downloads](https://img.shields.io/npm/dt/node-srt.svg?style=flat-square)](https://www.npmjs.com/package/node-srt)
+[![CircleCI](https://circleci.com/gh/waktaplay/node-srt-ts.svg?style=svg)](https://circleci.com/gh/waktaplay/node-srt-ts)
+[![npm version](https://badgen.net/npm/v/node-srt-ts)](https://www.npmjs.com/package/node-srt-ts)
+[![npm downloads](https://img.shields.io/npm/dt/node-srt-ts.svg?style=flat-square)](https://www.npmjs.com/package/node-srt-ts)
 
-This is a sister package to [osk/node-webvtt](https://github.com/osk/node-webvtt).
+This is a sister package to [osk/node-webvtt](https://github.com/osk/node-webvtt) and forked from [goatandsheep/node-srt](https://github.com/goatandsheep/node-srt).
 
 ## Usage
 
@@ -28,17 +28,17 @@ Bar
 
 We can parse, segment and create HLS playlists, and compile back to Subrip format:
 
-```javascript
-const subrip = require('node-srt');
+```ts
+import { parse, compile, hlsSegmentPlaylist, hlsSegment } from 'node-srt-ts';
 
 const segmentDuration = 10; // default to 10
 const startOffset = 0; // Starting MPEG TS offset to be used in timestamp map, default 900000
 
-const parsed = subrip.parse(input);
-const compile = subrip.compile(input);
-const segmented = subrip.parse(input, segmentDuration);
-const playlist = subrip.hls.hlsSegmentPlaylist(input, segmentDuration);
-const segments = subrip.hls.hlsSegment(input, segmentDuration, startOffset);
+const parsed = parse(input);
+const compile = compile(input);
+const segmented = parse(input, segmentDuration);
+const playlist = hlsSegmentPlaylist(input, segmentDuration);
+const segments = hlsSegment(input, segmentDuration, startOffset);
 ```
 
 ### Parsing
@@ -259,40 +259,13 @@ Creates a list of HLS segments for the subtitles, returning an array of them wit
 ]
 ```
 
-## CLI
-
-For segmenting a Subrip file quickly, you can use the included CLI tool:
-
-```bash
-./subrip-segment.js -v --target-duration 10 -o ./subs subs.vtt
-```
-
-```bash
-$ ./subrip-segment.js --help
-
-  Usage: subrip-segment [options] <subrip file>
-
-  Options:
-
-    -h, --help                        output usage information
-    -V, --version                     output the version number
-    -t, --target-duration [duration]  Target duration for each segment in secods, defaults to 10
-    -o, --output-directory [dir]      Output directory for segments and playlist
-    -v, --verbose                     Chatty output
-    -s, --silent                      No output
-```
-
 ## Development
 
 This has been written with TDD so we've got a good coverage of the features.
 
 ```bash
-npm install
-npm test
-mocha -w
-<write failing test>
-<write passing code>
-<lather, rinse, repeat>
+pnpm install
+pnpm test
 ```
 
 ## References

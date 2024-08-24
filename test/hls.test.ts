@@ -1,13 +1,11 @@
 'use strict';
-/* eslint no-trailing-spaces: 0 */
 
-const fs = require('fs');
-const chai = require('chai');
-chai.should();
+import {describe, expect, it} from '@jest/globals';
 
-const hls = require('../lib/hls');
+import * as fs from 'fs';
+import {hlsSegment, hlsSegmentPlaylist} from '../src/lib/hls';
 
-describe('WebVTT HLS segmenter', () => {
+describe('SRT HLS segmenter', () => {
   it('should generate playlist for a simple subtitles file', () => {
     const input = `00:00.000 --> 00:10.000
 a
@@ -25,9 +23,9 @@ a`;
 1.srt
 #EXT-X-ENDLIST
 `;
-    const generated = hls.hlsSegmentPlaylist(input, 10);
+    const generated = hlsSegmentPlaylist(input, 10);
 
-    generated.should.equal(expectedPlaylist);
+    expect(generated).toBe(expectedPlaylist);
   });
 
   it('should generate segments for a simple subtitles file', () => {
@@ -54,12 +52,12 @@ a
 b
 `;
 
-    const generated = hls.hlsSegment(input, 3);
+    const generated = hlsSegment(input, 3);
 
-    generated[0].filename.should.equal('0.srt');
-    generated[0].content.should.equal(expectedFirstSegment);
-    generated[1].filename.should.equal('1.srt');
-    generated[1].content.should.equal(expectedSecondSegment);
+    expect(generated[0].filename).toBe('0.srt');
+    expect(generated[0].content).toBe(expectedFirstSegment);
+    expect(generated[1].filename).toBe('1.srt');
+    expect(generated[1].content).toBe(expectedSecondSegment);
   });
 
   it('should generate allow for setting starting offset of segments', () => {
@@ -72,19 +70,19 @@ a
 a
 `;
 
-    const generated = hls.hlsSegment(input, 3, 0);
+    const generated = hlsSegment(input, 3, 0);
 
-    generated[0].filename.should.equal('0.srt');
-    generated[0].content.should.equal(expectedSegment);
+    expect(generated[0].filename).toBe('0.srt');
+    expect(generated[0].content).toBe(expectedSegment);
   });
 
   it.skip('should generate correct playlist, compared to apple tool', () => {
     const input = fs.readFileSync('./test/data/subs1.srt');
     const expectedPlaylist = fs.readFileSync('./test/data/playlist1.m3u8');
 
-    const generated = hls.hlsSegmentPlaylist(input.toString(), 10);
+    const generated = hlsSegmentPlaylist(input.toString(), 10);
 
-    generated.should.equal(expectedPlaylist.toString());
+    expect(generated).toBe(expectedPlaylist.toString());
   });
 
   it('should round target duration up to second', () => {
@@ -104,8 +102,8 @@ a`;
 1.srt
 #EXT-X-ENDLIST
 `;
-    const generated = hls.hlsSegmentPlaylist(input, 10);
+    const generated = hlsSegmentPlaylist(input, 10);
 
-    generated.should.equal(expectedPlaylist);
+    expect(generated).toBe(expectedPlaylist);
   });
 });

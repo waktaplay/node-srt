@@ -1,30 +1,31 @@
 'use strict';
 
-const segment = require('./segmenter').segment;
+import {ICue} from '../types/cue';
+import {IHlsSegment} from '../types/hls';
+import {ISegment} from '../types/segmenter';
+import {segment} from './segmenter';
 
-function hlsSegment (input, segmentLength, startOffset) {
-
-  if (typeof startOffset === 'undefined') {
-    startOffset = '900000';
-  }
-
+function hlsSegment(
+  input: string,
+  segmentLength: number,
+  startOffset = 900000
+): IHlsSegment[] {
   const segments = segment(input, segmentLength);
+  const result: IHlsSegment[] = [];
 
-  const result = [];
   segments.forEach((seg, i) => {
-
     const content = `X-TIMESTAMP-MAP=MPEGTS:${startOffset},LOCAL:00:00:00.000
 
 ${printableCues(seg.cues)}
 `;
     const filename = generateSegmentFilename(i);
-    result.push({ filename, content });
+    result.push({filename, content});
   });
+
   return result;
 }
 
-function hlsSegmentPlaylist (input, segmentLength) {
-
+function hlsSegmentPlaylist(input: string, segmentLength: number): string {
   const segmented = segment(input, segmentLength);
 
   const printable = printableSegments(segmented);
@@ -41,18 +42,12 @@ ${printable}
   return template;
 }
 
-function pad (num, n) {
-  const padding = '0'.repeat(Math.max(0, n - num.toString().length));
-
-  return `${padding}${num}`;
-}
-
-function generateSegmentFilename (index) {
+function generateSegmentFilename(index: number): string {
   return `${index}.srt`;
 }
 
-function printableSegments (segments) {
-  const result = [];
+function printableSegments(segments: ISegment[]): string {
+  const result: string[] = [];
   segments.forEach((seg, i) => {
     result.push(`#EXTINF:${seg.duration.toFixed(5)},
 ${generateSegmentFilename(i)}`);
@@ -61,9 +56,9 @@ ${generateSegmentFilename(i)}`);
   return result.join('\n');
 }
 
-function findLongestSegment (segments) {
+function findLongestSegment(segments: ISegment[]): number {
   let max = 0;
-  segments.forEach((seg) => {
+  segments.forEach(seg => {
     if (seg.duration > max) {
       max = seg.duration;
     }
@@ -72,46 +67,43 @@ function findLongestSegment (segments) {
   return max;
 }
 
-function printableCues (cues) {
-  const result = [];
-  cues.forEach((cue) => {
+function printableCues(cues: ICue[]): string {
+  const result: string[] = [];
+  cues.forEach(cue => {
     result.push(printableCue(cue));
   });
 
   return result.join('\n\n');
 }
 
-function printableCue (cue) {
-  const printable = [];
+function printableCue(cue: ICue): string {
+  const printable: string[] = [];
 
-  if (cue.identifier) {
-    printable.push(cue.identifier);
-  }
+  if (cue.identifier) printable.push(cue.identifier.toString());
 
-  const start = printableTimestamp(cue.start);
-  const end = printableTimestamp(cue.end);
+  const start = printableTimestamp(Number(cue.start));
+  const end = printableTimestamp(Number(cue.end));
 
   const styles = cue.styles ? `${cue.styles}` : '';
 
   // always add a space after end timestamp, otherwise JWPlayer will not
   // handle cues correctly
   printable.push(`${start} --> ${end} ${styles}`);
-
   printable.push(cue.text);
 
   return printable.join('\n');
 }
 
-function printableTimestamp (timestamp) {
-  const ms = (timestamp % 1).toFixed(3);
+function printableTimestamp(timestamp: number): string {
+  const ms = Math.round((timestamp % 1) * 1000) / 1000;
   timestamp = Math.round(timestamp - ms);
+
   const hours = Math.floor(timestamp / 3600);
-  const mins = Math.floor((timestamp - (hours * 3600)) / 60);
-  const secs = timestamp - (hours * 3600) - (mins * 60);
+  const mins = Math.floor((timestamp - hours * 3600) / 60);
+  const secs = timestamp - hours * 3600 - mins * 60;
 
   // TODO hours aren't required by spec, but we include them, should be config
-  const hourString = `${pad(hours, 2)}:`;
-  return `${hourString}${pad(mins, 2)}:${pad(secs, 2)}.${pad(ms * 1000, 3)}`;
+  return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}.${(ms * 1000).toString().padStart(3, '0')}`;
 }
 
-module.exports = { hlsSegment, hlsSegmentPlaylist };
+export {hlsSegment, hlsSegmentPlaylist};

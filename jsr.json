@@ -1,0 +1,15 @@
+{
+  "name": "@kms0219kms/node-srt-ts",
+  "version": "3.0.1",
+  "description": "Parse SRT files, segments and generates HLS playlists for them with Typescript support.",
+  "exports": "./src/index.ts",
+  "publish": {
+    "include": [
+      "src/**/*.ts",
+      "package.json",
+      "tsconfig.json",
+      "LICENSE",
+      "README.md"
+    ]
+  }
+}

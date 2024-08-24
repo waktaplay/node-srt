@@ -1,15 +1,15 @@
 'use strict';
 
-const parse = require('./parser').parse;
+import {ICue} from '../types/cue';
+import {ISegment} from '../types/segmenter';
+import {parse} from './parser';
 
-function segment (input, segmentLength) {
-  segmentLength = segmentLength || 10;
-
+export function segment(input: string, segmentLength = 10): ISegment[] {
   const parsed = parse(input);
-  const segments = [];
+  const segments: {duration: number; cues: ICue[]}[] = [];
 
-  let cues = [];
-  let queuedCue = null;
+  let cues: ICue[] = [];
+  let queuedCue: ICue | null = null;
   let currentSegmentDuration = 0;
   let totalSegmentsDuration = 0;
 
@@ -19,11 +19,13 @@ function segment (input, segmentLength) {
   parsed.cues.forEach((cue, i) => {
     const firstCue = i === 0;
     const lastCue = i === parsed.cues.length - 1;
-    const start = cue.start;
-    const end = cue.end;
-    const nextStart = lastCue ? Infinity : parsed.cues[i + 1].start;
+
+    const start = Number(cue.start);
+    const end = Number(cue.end);
+
+    const nextStart = lastCue ? Infinity : Number(parsed.cues[i + 1].start);
     const cueLength = firstCue ? end : end - start;
-    const silence = firstCue ? 0 : (start - parsed.cues[i - 1].end);
+    const silence = firstCue ? 0 : start - Number(parsed.cues[i - 1].end);
 
     currentSegmentDuration = currentSegmentDuration + cueLength + silence;
 
@@ -39,25 +41,30 @@ function segment (input, segmentLength) {
     // if there's a boundary cue queued, push and clear queue
     if (queuedCue) {
       cues.push(queuedCue);
-      currentSegmentDuration += queuedCue.end - totalSegmentsDuration;
+      currentSegmentDuration += Number(queuedCue.end) - totalSegmentsDuration;
       queuedCue = null;
     }
 
     cues.push(cue);
 
     // if a cue passes a segment boundary, it appears in both
-    let shouldQueue = nextStart - end < segmentLength &&
-                        silence < segmentLength &&
-                        currentSegmentDuration > segmentLength;
+    let shouldQueue =
+      nextStart - end < segmentLength &&
+      silence < segmentLength &&
+      currentSegmentDuration > segmentLength;
 
-    if (shouldSegment(totalSegmentsDuration, segmentLength, nextStart,
-      silence)) {
-
-      const duration = segmentDuration(lastCue, end, segmentLength,
+    if (
+      shouldSegment(totalSegmentsDuration, segmentLength, nextStart, silence)
+    ) {
+      const duration = segmentDuration(
+        lastCue,
+        end,
+        segmentLength,
         currentSegmentDuration,
-        totalSegmentsDuration);
+        totalSegmentsDuration
+      );
 
-      segments.push({ duration, cues });
+      segments.push({duration, cues});
 
       totalSegmentsDuration += duration;
       currentSegmentDuration = 0;
@@ -74,17 +81,26 @@ function segment (input, segmentLength) {
   return segments;
 }
 
-function shouldSegment (total, length, nextStart, silence) {
-
+function shouldSegment(
+  total: number,
+  length: number,
+  nextStart: number,
+  silence: number
+): boolean {
   // this is stupid, but gets one case fixed...
   const x = alignToSegmentLength(silence, length);
-  const nextCueIsInNextSegment = silence <= length ||
-                                 x + total < nextStart;
+  const nextCueIsInNextSegment = silence <= length || x + total < nextStart;
 
   return nextCueIsInNextSegment && nextStart - total >= length;
 }
 
-function segmentDuration (lastCue, end, length, currentSegment, totalSegments) {
+function segmentDuration(
+  lastCue: boolean,
+  end: number,
+  length: number,
+  currentSegment: number,
+  totalSegments: number
+): number {
   let duration = length;
 
   if (currentSegment > length) {
@@ -101,18 +117,15 @@ function segmentDuration (lastCue, end, length, currentSegment, totalSegments) {
   return duration;
 }
 
-function alignToSegmentLength (n, segmentLength) {
-  n += segmentLength - n % segmentLength;
+function alignToSegmentLength(n: number, segmentLength: number): number {
+  n += segmentLength - (n % segmentLength);
   return n;
 }
 
 const debugging = false;
 
-/* istanbul ignore next */
-function debug (m) {
+function debug(m: string): void {
   if (debugging) {
     console.log(m);
   }
 }
-
-module.exports = { segment };
