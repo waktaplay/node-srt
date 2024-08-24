@@ -84,7 +84,7 @@ function convertTimestamp(time: number): string {
   const seconds = calculateSeconds(time).toString().padStart(2, '0');
   const milliseconds = calculateMs(time).toString().padStart(3, '0');
 
-  return `${hours}:${minutes}:${seconds}.${milliseconds}`;
+  return `${hours}:${minutes}:${seconds},${milliseconds}`;
 }
 
 function calculateHours(time: number): number {

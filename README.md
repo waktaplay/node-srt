@@ -13,15 +13,19 @@ This is a sister package to [osk/node-webvtt](https://github.com/osk/node-webvtt
 For a Subrip file:
 
 ```text
+1
 00:00:00.000 --> 00:00:01.000
 Hello world!
 
+2
 00:00:30.000 --> 00:00:31.000 align:start line:0%
 This is a subtitle
 
+3
 00:01:00.000 --> 00:01:01.000
 Foo
 
+4
 00:01:50.000 --> 00:01:51.000
 Bar
 ```
@@ -95,44 +99,13 @@ For the above example we'd get:
 
 By default the parser is strict. It will throw errors if:
 
-* Header is incorrect, i.e. does not start with `WEBVTT`
 * If any cue is malformed in any way
 
 Setting the option parameter of `strict` to `false` will allow files with malformed cues to be parsed. The resulting object will have `valid === false` and all errors in an `errors` array.
 
 If `strict` is set to `false`, the parser will also not categorize it as an error if a cue starts and ends at the same time. This might be the correct behaviour but changing would introduce a breaking change in version 1.x.
 
-```javascript
-const input = `WEBVTT
-
-MALFORMEDCUE -->
-This text is from a malformed cue. It should not be processed.
-
-1
-00:00.000 --> 00:00.001
-test`;
-
-const result = parse(input, { strict: false });
-
-/*
-result = {
-  valid: false,
-  strict: false,
-  cues: [ { identifier: '1', start: 0, end: 0.001, text: 'test', styles: '' } ],
-  errors: [ { Error: Invalid cue timestamp (cue #0) message: 'Invalid cue timestamp (cue #0)', error: undefined } ]
-}
-*/
-```
-
 ### Metadata
-
-Some Subrip strings may also contain lines of metadata after the initial `WEBVTT` line, for example:
-
-```text
-00:00:00.000 --> 00:00:01.000
-Hello world!
-```
-
 By passing `{ meta: true }` to the `parse` method, these metadata will be returned as an object called `meta`. For example, parsing the above example:
 
 ```javascript
@@ -224,13 +197,13 @@ Creates a subtitle playlist. For the above:
 #EXT-X-MEDIA-SEQUENCE:0
 #EXT-X-PLAYLIST-TYPE:VOD
 #EXTINF:10.00000,
-0.vtt
+0.srt
 #EXTINF:30.00000,
-1.vtt
+1.srt
 #EXTINF:30.00000,
-2.vtt
+2.srt
 #EXTINF:41.00000,
-3.vtt
+3.srt
 #EXT-X-ENDLIST
 ```
 
@@ -241,20 +214,20 @@ Creates a list of HLS segments for the subtitles, returning an array of them wit
 ```json
 [
    {
-      "filename":"0.vtt",
-      "content":"WEBVTT\nX-TIMESTAMP-MAP=MPEGTS:900000,LOCAL:00:00:00.000\n\n00:00:00.000 --> 00:00:01.000\nHello world!\n"
+      "filename":"0.srt",
+      "content":"X-TIMESTAMP-MAP=MPEGTS:900000,LOCAL:00:00:00.000\n\n1\n00:00:00.000 --> 00:00:01.000\nHello world!\n"
    },
    {
-      "filename":"1.vtt",
-      "content":"WEBVTT\nX-TIMESTAMP-MAP=MPEGTS:900000,LOCAL:00:00:00.000\n\n00:00:30.000 --> 00:00:31.000 align:start line:0%\nThis is a subtitle\n"
+      "filename":"1.srt",
+      "content":"X-TIMESTAMP-MAP=MPEGTS:900000,LOCAL:00:00:00.000\n\n2\n00:00:30.000 --> 00:00:31.000 align:start line:0%\nThis is a subtitle\n"
    },
    {
-      "filename":"2.vtt",
-      "content":"WEBVTT\nX-TIMESTAMP-MAP=MPEGTS:900000,LOCAL:00:00:00.000\n\n00:01:00.000 --> 00:01:01.000\nFoo\n"
+      "filename":"2.srt",
+      "content":"X-TIMESTAMP-MAP=MPEGTS:900000,LOCAL:00:00:00.000\n\n3\n00:01:00.000 --> 00:01:01.000\nFoo\n"
    },
    {
-      "filename":"3.vtt",
-      "content":"WEBVTT\nX-TIMESTAMP-MAP=MPEGTS:900000,LOCAL:00:00:00.000\n\n00:01:50.000 --> 00:01:51.000\nBar\n"
+      "filename":"3.srt",
+      "content":"X-TIMESTAMP-MAP=MPEGTS:900000,LOCAL:00:00:00.000\n\n4\n00:01:50.000 --> 00:01:51.000\nBar\n"
    }
 ]
 ```
@@ -267,11 +240,3 @@ This has been written with TDD so we've got a good coverage of the features.
 pnpm install
 pnpm test
 ```
-
-## References
-
-* Anne van Kesteren's [WebVTT validator](https://github.com/annevk/webvtt)
-  * [Live validator](https://quuz.org/webvtt/)
-* [WebVTT Ruby parser and segmenter](https://github.com/opencoconut/webvtt-ruby)
-* `mediasubtitlesegmenter` from Apple
-* [WebVTT: The Web Video Text Tracks Format](https://w3c.github.io/webvtt/)

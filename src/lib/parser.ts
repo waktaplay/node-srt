@@ -1,6 +1,6 @@
 'use strict';
 
-import {ICue} from '../types/cue';
+import {IParsedCue} from '../types/cue';
 import {ParserError} from '../types/exceptions/parser';
 import {IParsedCueObject, IParsedObject} from '../types/parser';
 
@@ -48,7 +48,7 @@ function parseCues(cues: string[], strict = true): IParsedCueObject {
         return null;
       }
     })
-    .filter(x => !!x) as ICue[];
+    .filter(x => !!x)!;
 
   return {
     cues: parsedCues,
@@ -65,7 +65,7 @@ function parseCues(cues: string[], strict = true): IParsedCueObject {
  * @returns {object} cue Cue object with start, end, text and styles.
  *                       Null if it's a note
  */
-function parseCue(cue: string, i: number, strict: boolean): ICue | null {
+function parseCue(cue: string, i: number, strict: boolean): IParsedCue | null {
   let identifier = '';
 
   let start = 0;
@@ -127,8 +127,9 @@ function parseCue(cue: string, i: number, strict: boolean): ICue | null {
     );
   }
 
-  // TODO better style validation
-  styles = times[1].replace(TIMESTAMP_REGEXP, '').trim();
+  // TODO: better style validation
+  // TODO: Find better way (rather than replace comma to dot)
+  styles = times[1].replace(',', '.').replace(TIMESTAMP_REGEXP, '').trim();
 
   lines.shift();
 
@@ -139,11 +140,13 @@ function parseCue(cue: string, i: number, strict: boolean): ICue | null {
 }
 
 function validTimestamp(timestamp: string): boolean {
-  return TIMESTAMP_REGEXP.test(timestamp);
+  // TODO: Find better way (rather than replace comma to dot)
+  return TIMESTAMP_REGEXP.test(timestamp.replace(',', '.'));
 }
 
 function parseTimestamp(timestamp: string): number {
-  const matches = timestamp.match(TIMESTAMP_REGEXP);
+  // TODO: Find better way (rather than replace comma to dot)
+  const matches = timestamp.replace(',', '.').match(TIMESTAMP_REGEXP);
 
   let secs = parseFloat(matches?.[1] || '0') * 60 * 60; // hours
   secs += parseFloat(matches?.[2] || '0') * 60; // mins

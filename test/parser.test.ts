@@ -37,7 +37,7 @@ a`;
   });
 
   it('should fail parsing cue with no min in timestamp', () => {
-    const input = `00:00.001 --> 00:00.000
+    const input = `00:00,001 --> 00:00,000
 a`;
 
     expect(() => {
@@ -47,7 +47,7 @@ a`;
 
   it('should parse cue with legal timestamp and id', () => {
     const input = `1
-00:00.000 --> 00:00.001
+00:00,000 --> 00:00,001
 a`;
 
     expect(parse(input).cues[0].start).toBe(0);
@@ -55,7 +55,7 @@ a`;
   });
 
   it('should parse cue with legal timestamp, no id and text', () => {
-    const input = `00:00.000 --> 00:00.001
+    const input = `00:00,000 --> 00:00,001
 a`;
 
     expect(parse(input).cues[0].start).toBe(0);
@@ -81,7 +81,7 @@ b`;
 
   it('should parse cue with mins & hours in timestamp', () => {
     const input = `1
-10:00.000 --> 01:00:00.000
+10:00,000 --> 01:00:00,000
 a`;
 
     expect(parse(input).cues[0].start).toBe(600);
@@ -89,11 +89,11 @@ a`;
   });
 
   it('should parse intersecting cues', () => {
-    const input = `00:00:00.000 --> 00:00:12.000
+    const input = `00:00:00,000 --> 00:00:12,000
 a
 
 
-00:00:01.000 --> 00:00:13.000
+00:00:01,000 --> 00:00:13,000
 b`;
 
     expect(parse(input).cues).toHaveLength(2);
@@ -104,7 +104,7 @@ b`;
   });
 
   it('should fail parsing if start equal to end', () => {
-    const input = `00:00:00.000 --> 00:00:00.000
+    const input = `00:00:00,000 --> 00:00:00,000
 a`;
 
     expect(() => {
@@ -113,7 +113,7 @@ a`;
   });
 
   it('should parse cue with trailing lines', () => {
-    const input = `00:00.000 --> 00:00.001
+    const input = `00:00,000 --> 00:00,001
 a
 
 `;
@@ -123,7 +123,7 @@ a
   });
 
   it('should parse cue with one digit hours in timestamp', () => {
-    const input = `59:16.403 --> 1:04:13.283
+    const input = `59:16,403 --> 1:04:13,283
 Chapter 17`;
 
     expect(parse(input).cues[0].start).toBe(3556.403);
@@ -136,19 +136,19 @@ Chapter 17`;
     some friends can watch it with their parents.
 
     1
-    00:02:15.000 --> 00:02:20.000
+    00:02:15,000 --> 00:02:20,000
     - Ta en kopp varmt te.
     - Det är inte varmt.
 
     2
-    00:02:20.000 --> 00:02:25.000
+    00:02:20,000 --> 00:02:25,000
     - Har en kopp te.
     - Det smakar som te.
 
     NOTE This last line may not translate well.
 
     3
-    00:02:25.000 --> 00:02:30.000
+    00:02:25,000 --> 00:02:30,000
     - Ta en kopp`;
 
     expect(parse(input).cues).toHaveLength(3);
@@ -161,10 +161,10 @@ Chapter 17`;
   });
 
   it('should skip blank text cues', () => {
-    const input = `00:00.000 --> 00:00.001
+    const input = `00:00,000 --> 00:00,001
 
     3
-    00:02:25.000 --> 00:02:30.000
+    00:02:25,000 --> 00:02:30,000
     - Ta en kopp`;
 
     expect(parse(input).cues).toHaveLength(1);
@@ -172,7 +172,7 @@ Chapter 17`;
 
   it('should not return meta by default', () => {
     const input = `1
-00:00.000 --> 00:00.001`;
+00:00,000 --> 00:00,001`;
 
     const result = parse(input);
 
@@ -182,7 +182,7 @@ Chapter 17`;
 
   it('should return strict as default true', () => {
     const input = `1
-    00:00.000 --> 00:00.001`;
+    00:00,000 --> 00:00,001`;
 
     const result = parse(input);
 
@@ -194,7 +194,7 @@ Chapter 17`;
     const options = {strict: false};
 
     const input = `1
-    00:00.000 --> 00:00.001`;
+    00:00,000 --> 00:00,001`;
 
     const result = parse(input, options);
 
@@ -209,7 +209,7 @@ Chapter 17`;
 This text is from a malformed cue. It should not be processed.
 
 1
-00:00.000 --> 00:00.001
+00:00,000 --> 00:00,001
 test`;
 
     const result = parse(input, options);
@@ -223,7 +223,7 @@ test`;
   });
 
   it('should error when parsing a cue w/start end in strict', () => {
-    const input = `00:00.002 --> 00:00.001
+    const input = `00:00,002 --> 00:00,001
 a`;
 
     const options = {strict: false};
@@ -263,7 +263,7 @@ Text Position: 5%
   });
 
   it('should parse cue w/o round-off', () => {
-    const input = `01:24:39.06 --> 01:24:40.060
+    const input = `01:24:39,06 --> 01:24:40,060
 a`;
 
     expect(parse(input).cues[0].start).toBe(5079.06);
@@ -272,7 +272,7 @@ a`;
 
   it('should not throw unhandled error on malformed input in non strict mode', () => {
     const input = `1096
-01:45:13.056 --> 01:45:14.390
+01:45:13,056 --> 01:45:14,390
 
 
 
@@ -291,7 +291,7 @@ a`;
 
   it('should throw a handled error not an unhandled one on malformed input', () => {
     const input = `1096
-01:45:13.056 --> 01:45:14.390
+01:45:13,056 --> 01:45:14,390
 
 
 

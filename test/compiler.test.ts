@@ -197,17 +197,17 @@ describe('SRT compiler', () => {
       valid: true,
     };
     const output = `1
-00:02:15.001 --> 00:02:20.000
+00:02:15,001 --> 00:02:20,000
 Ta en kopp varmt te.
 Det är inte varmt.
 
 2
-00:02:20.000 --> 00:02:25.000
+00:02:20,000 --> 00:02:25,000
 Har en kopp te.
 Det smakar som te.
 
 3
-00:02:25.000 --> 00:02:30.000
+00:02:25,000 --> 00:02:30,000
 Ta en kopp
 `;
 
@@ -242,17 +242,17 @@ Ta en kopp
       valid: true,
     };
     const output = `1
-00:19:59.529 --> 00:19:59.539
+00:19:59,529 --> 00:19:59,539
 Ta en kopp varmt te.
 Det är inte varmt.
 
 2
-00:19:59.539 --> 00:19:59.549
+00:19:59,539 --> 00:19:59,549
 Har en kopp te.
 Det smakar som te.
 
 3
-00:19:59.549 --> 00:19:59.558
+00:19:59,549 --> 00:19:59,558
 Ta en kopp
 `;
 
@@ -273,7 +273,7 @@ Ta en kopp
       valid: true,
     };
     const output = `1
-00:02:15.999 --> 00:02:20.000
+00:02:15,999 --> 00:02:20,000
 Ta en kopp varmt te.
 Det är inte varmt.
 `;
@@ -286,9 +286,9 @@ Det är inte varmt.
       compile({
         cues: [
           {
-            end: '1',
+            end: 1,
             identifier: '',
-            start: '0',
+            start: 0,
             styles: '',
             text: 'Hello world!',
           },
@@ -300,17 +300,17 @@ Det är inte varmt.
 
   it('should be reversible', () => {
     const input = `1
-00:02:15.001 --> 00:02:20.000
+00:02:15,001 --> 00:02:20,000
 Ta en kopp varmt te.
 Det är inte varmt.
 
 2
-00:02:20.000 --> 00:02:25.000
+00:02:20,000 --> 00:02:25,000
 Har en kopp te.
 Det smakar som te.
 
 3
-00:02:25.000 --> 00:02:30.000
+00:02:25,000 --> 00:02:30,000
 Ta en kopp
 `;
     expect(compile(parse(input))).toBe(input);
@@ -364,7 +364,7 @@ Ta en kopp
       valid: true,
     };
     const output = `1
-00:02:15.001 --> 00:02:20.000 align:start line:0%
+00:02:15,001 --> 00:02:20,000 align:start line:0%
 Hello world
 `;
 

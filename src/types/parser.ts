@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import {ICue} from './cue';
+import {IParsedCue} from './cue';
 import {ParserError} from './exceptions/parser';
 
 export interface IBaseParsedObject {
   valid: boolean;
-  cues: ICue[];
+  cues: IParsedCue[];
 }
 
 export interface IParsedObject extends IBaseParsedObject {
@@ -14,6 +14,6 @@ export interface IParsedObject extends IBaseParsedObject {
 }
 
 export interface IParsedCueObject {
-  cues: ICue[];
+  cues: IParsedCue[];
   errors: (ParserError | any)[];
 }
