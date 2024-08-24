@@ -6,3 +6,12 @@ export {segment} from './lib/segmenter';
 export {hlsSegment, hlsSegmentPlaylist} from './lib/hls';
 
 export {CompilerError, ParserError} from './types/exceptions';
+
+export type {ICue} from './types/cue';
+export type {IHlsSegment} from './types/hls';
+export type {ISegment} from './types/segmenter';
+export type {
+  IBaseParsedObject,
+  IParsedObject,
+  IParsedCueObject,
+} from './types/parser';
